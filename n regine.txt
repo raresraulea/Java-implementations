@@ -1,0 +1,48 @@
+
+public class Nqueens {
+
+	int S[];
+	
+		public void Afiseaza(int A[]){
+			for(int i=0;i<S.length;i++)
+				System.out.print(A[i] + " ");
+			System.out.println();
+		}
+		
+		public boolean Accept(int k, int i){
+			for(int j=0;j<k;j++){
+				if(S[j] == i)
+					return false;
+				if(Math.abs(j-k) == Math.abs(S[j]-i))
+					return false;
+			}
+			
+			return true;
+		}
+		
+		public void Queens(int k){
+			for(int i=0;i<S.length;i++)
+				if(Accept(k,i)){
+					S[k] = i;
+				if(k==S.length-1)
+					Afiseaza(S);
+				else Queens(k+1);
+				}
+			
+		}
+	
+		
+		
+	
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		int n = 4;
+		Nqueens q = new Nqueens();
+		q.S = new int[n];
+		q.Queens(0);
+		
+	}
+
+}

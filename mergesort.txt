@@ -1,0 +1,68 @@
+package merge;
+
+import java.util.Random;
+
+/**
+ * <p>Title: </p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2012</p>
+ * <p>Company: </p>
+ * @author not attributable
+ * @version 1.0
+ */
+
+public class mer {
+ public static void inter(int a[],int st,int m,int dr)
+ {
+   int i=st,j=m+1,c[]=new int[a.length],k=0,t;
+        while((i<=m)&&(j<=dr))
+        {
+                if(a[i]<a[j])
+                        c[k++]=a[i++];
+                else
+                        c[k++]=a[j++];
+        }
+                for(t=i;t<=m;t++)
+                        c[k++]=a[t];
+                for(t=j;t<=dr;t++)
+                        c[k++]=a[t];
+
+                for(i=0;i<k;i++)
+                  a[i+st]=c[i];
+
+
+
+   }
+ public static void merge(int a[],int st,int dr)
+ {  int m;
+
+        if(st<dr)
+        {
+                m=(st+dr)/2;
+                merge(a,st,m);
+                merge(a,m+1,dr);
+                inter(a,st,m,dr);
+        }
+
+
+
+ }
+  public static void main(String[] args) {
+    int n = 100000,  i, a[] = new int[n];
+  long c = System.currentTimeMillis();
+  Random generator = new Random(100000);
+  for (i = 0; i < n; i++) {
+    a[i] = generator.nextInt(100000);
+  }
+
+
+  merge(a,0,n-1);
+  long b=System.currentTimeMillis();
+  long d=b-c;
+  for(i=0;i<10;i++)
+    System.out.println(a[i]);
+  System.out.println(d);
+
+  }
+
+}

@@ -1,0 +1,64 @@
+package quick;
+
+import java.util.Random;
+
+/**
+ * <p>Title: </p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2012</p>
+ * <p>Company: </p>
+ * @author not attributable
+ * @version 1.0
+ */
+
+public class qui  {
+  public void quick(int x[],int p,int u)
+  {
+    int i,j,piv;
+    i=p;
+    j=u;
+    piv=x[p];
+    while(i<j)
+    {
+      while (x[i] < piv)
+        i++;
+      while (x[j] > piv)
+        j--;
+      if (i < j) {
+        int t;
+        t = x[i];
+        x[i] = x[j];
+        x[j] = t;
+      }
+      if (i <= j) {
+        i++;
+        j--;
+      }
+    }
+      if(p<j)
+        quick(x,p,j);
+      if(i<u)
+        quick(x,i,u);
+
+
+  }
+
+
+  public static void main(String[] args) {
+    int n = 100000,  i, x[] = new int[n];
+   long a = System.currentTimeMillis();
+   Random generator = new Random(100000);
+   for (i = 0; i < n; i++) {
+    x[i] = generator.nextInt(100000);
+  }
+
+   qui c= new qui();
+   c.quick(x,0,n-1);
+   long b=System.currentTimeMillis();
+   long d=b-a;
+   for(i=0;i<10;i++)
+     System.out.println(x[i]);
+   System.out.println(d);
+
+  }
+}

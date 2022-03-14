@@ -1,0 +1,102 @@
+package heap;
+
+/**
+ * <p>Title: </p>
+ * <p>Description: </p>
+ * <p>Copyright: Copyright (c) 2012</p>
+ * <p>Company: </p>
+ * @author not attributable
+ * @version 1.0
+ */
+
+public class heap {
+  int a[]={5,19,7,83,1,65,28};
+  int s=a.length;
+  public heap() {
+  }
+  public static int parinte(int i)
+  {
+    return (i-1)/2;
+  }
+  public static int stanga(int i)
+  {
+    return 2*i+1;
+  }
+  public static int dreapta(int i)
+  {
+    return 2*i+2;
+  }
+  public void insereaza(int a[],int z)
+  { int i;
+    s++;
+    i=s;
+    while(i>1&&a[parinte(i)]>z)
+      {
+        a[i] = a[parinte(i)];
+        i = parinte(i);
+      }
+      a[i]=z;
+  }
+  public void reconstituie(int a[],int i)
+  {
+    int st,dr,min,aux;
+    st=stanga(i);
+    dr=dreapta(i);
+    if(st<=s-1&&a[st]>a[i])
+      min=st;
+    else
+      min=i;
+    if(dr<=s-1&&a[dr]>a[min])
+      min=dr;
+    if(min!=i)
+    {
+      aux=a[i];
+      a[i]=a[min];
+      a[min]=aux;
+      reconstituie(a,min);
+    }
+  }
+  public int extrage(int a[])
+  {
+    int min;
+    min=a[0];
+    a[0]=a[s];
+    s--;
+    reconstituie(a,0);
+    return min;
+  }
+
+  public void construieste(int a[])
+  {
+    s=a.length;
+    for(int i=s/2;i>=0;i--)
+      reconstituie(a,i);
+  }
+  public void heapsort(int a[])
+  { int aux;
+    construieste(a);
+    for(int i=a.length-1;i>=1;i--)
+    {
+      aux=a[i];
+      a[i]=a[0];
+      a[0]=aux;
+      s--;
+      reconstituie(a,0);
+    }
+
+  }
+
+  public static void main(String[] args) {
+    heap h = new heap();
+   /* h.construieste(h.a);
+    for(int i=0;i<h.s;i++)
+        System.out.print(h.a[i]+" ");*/
+    h.heapsort(h.a);
+        System.out.println();
+    for(int i=0;i<h.a.length;i++)
+        System.out.print(h.a[i]+" ");
+
+
+  }
+
+}
