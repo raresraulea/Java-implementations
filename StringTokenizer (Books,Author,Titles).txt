@@ -1,0 +1,103 @@
+package pagina59.src.pagina59;
+
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.StringTokenizer;
+public class Book extends Product {
+	private String title;
+	private String author;
+	private String publisher;
+	public Book(double price,String title,String author,String publisher){
+		super(price);
+		this.title=title;
+		this.author=author;
+		this.publisher=publisher;
+	}
+	public Book(){
+		super();
+	}
+	
+	public void setTitle(String title) {
+		this.title=title;
+	}
+    public String getTitle(){
+    	return title;
+    }
+    public void setAuthor(String author) {
+		this.author=author;
+	}
+    public String getAuthor(){
+    	return author;
+    }
+    public void setPublisher(String publisher) {
+		this.publisher=publisher;
+	}
+    public String getPublisher(){
+    	return publisher;
+    }
+	public static void main(String[] args) {
+		FileInputStream fis = null;
+		try{
+			fis = new FileInputStream("C:\\book.txt");
+		}
+		catch(FileNotFoundException fnfe){
+			System.out.print("Fisierul nu exista!");
+		}
+		DataInputStream dis = new DataInputStream(fis); 
+		String str=null;
+		int nr=0;
+		try {
+			str=dis.readLine();
+		    nr=Integer.parseInt(str);
+		}
+			 catch(IOException ioe){
+				 ioe.printStackTrace();
+			 }
+			 catch(NumberFormatException nfe){
+				 System.out.println("Nu sunt valori numerice,schimbati continutul fiserului! ");
+			 }
+		System.out.println("Sunt "+nr+" carti!");
+		Book carti[]=new Book[nr];
+		for(int i=0;i<nr;i++){
+		try {
+			str=dis.readLine();
+			StringTokenizer st=new StringTokenizer(str,";");
+			while(st.hasMoreTokens())
+			carti[i]=new Book(Double.parseDouble(st.nextToken()),st.nextToken(),st.nextToken(),st.nextToken())	;	
+				
+			 
+		}
+		catch(IOException ioe){
+			 ioe.printStackTrace();
+		 }
+		 catch(NumberFormatException nfe){
+			 System.out.println("Nu sunt valori numerice,schimbati continutul fiserului! ");
+		 }
+		}
+		
+		for(int i=0;i<nr-1;i++)
+			for(int j=i+1;j<nr;j++){
+				if((carti[i].getPrice())>(carti[j].getPrice())) {
+					Book c=new Book();
+					c.setPrice(carti[i].getPrice());
+					carti[i].setPrice(carti[j].getPrice());
+					carti[j].setPrice(c.getPrice());
+					c.setAuthor(carti[i].getAuthor());
+					carti[i].setAuthor(carti[j].getAuthor());
+					carti[j].setAuthor(c.getAuthor());
+					c.setTitle(carti[i].getTitle());
+					carti[i].setTitle(carti[j].getTitle());
+					carti[j].setTitle(c.getTitle());
+					c.setPublisher(carti[i].getPublisher());
+					carti[i].setPublisher(carti[j].getPublisher());
+					carti[j].setPublisher(c.getPublisher());
+				}
+			}
+		for(int i=0;i<nr;i++){
+			System.out.println(carti[i].getPublisher()+" "+carti[i].getTitle()+" "+carti[i].getAuthor()+" "+carti[i].getPrice()+" ");
+		}
+	}
+
+}
