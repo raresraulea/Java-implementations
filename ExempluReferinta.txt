@@ -1,0 +1,38 @@
+package com.company;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Scanner;
+
+public class Main {
+
+    public static void changeFile(File file)
+    {
+        File f2 = new File("D:\\");
+        file = f2;
+    }
+    public static void changeFile2(File[] file)
+    {
+        File f2 = new File("D:\\");
+        file[0] = f2;
+    }
+
+    public static void main(String[] args) {
+
+        File f1 = new File("C:\\");
+        File[] fileArray = {f1};
+
+        System.out.println("File Inainte: " + f1.getPath());
+        System.out.println("FileArray[0] Inainte: " + fileArray[0].getPath());
+
+        changeFile(f1);
+        changeFile2(fileArray);
+
+        System.out.println("File Dupa: " + f1.getPath());
+        System.out.println("FileArray[0] Dupa: " + fileArray[0].getPath());
+
+    }
+}

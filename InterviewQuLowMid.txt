@@ -1,0 +1,163 @@
+package com.company;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+// 1. Sa se afiseze toate caracterele care au dublura in stringul dat
+// 2. Sa se verifice daca stringurile date sunt anagrame sau nu (formate din aceleasi caractere cu acelasi nrAparitii)
+// 3. Sa se afiseze primul caracter unic al stringului transmis ca parametru
+// 4. Sa se inverseze stringul transmis ca paramentru (iterativ si recursiv!)
+// 5. Sa se afiseze numarul de vocale si numarul de consoane al strigului dat
+// 6. Sa se converteasca string in int
+
+public class Main {
+    public static void main(String[] args) {
+        //Duplicates in a string problem
+
+        // Prb 1
+        findDuplicateCharacters("Java");
+        findDuplicateCharacters("Merge la gara");
+
+        // Prb 2
+        System.out.println(checkAnagrams("ana", "naa"));
+        System.out.println(checkAnagrams("ana", "naaa"));
+
+        // Prb 3
+        firstUniqueChar("ana");
+        firstUniqueChar("AANNaann");
+
+        // Prb 4
+        System.out.println(reverseString("rares"));
+        System.out.println(reverseStringRecursively("rares"));
+
+        // Prb 5
+        vowelsAndConsonants("aert");
+        vowelsAndConsonants("AAEE");
+
+        // Prb 6
+        String number = "1234";
+        System.out.println(Integer.parseInt(number));
+
+        //Prb 7
+        System.out.println(removeDuplicates("Bananas"));
+
+    }
+
+    public static void findDuplicateCharacters(String word)
+    {
+        System.out.println("Duplicates Problem: " + word);
+        //obtin caracterele intr-un array
+        char[] chars = word.toCharArray();
+
+        //parcurg fiecare caracter din array, il memorez intr-un Map
+        //alaturi de numarul de aparitii
+        Map<Character, Integer> charMap = new HashMap<Character, Integer>();
+        for(Character ch : chars)
+        {
+            //daca deja este in Map
+            if(charMap.containsKey(ch) && ch != ' ')
+                charMap.put(ch, charMap.get(ch) + 1); //!este INLOCUIT cu el insusi si nr aparitii + 1
+            else
+                charMap.put(ch, 1); //altfel este pus ca prima aparitie
+        }
+
+        System.out.println("Duplicates characters in " + word + ": ");
+
+        //folosesc o structura de date de tip set care retine in mod unic intrari (Entries)
+        //ale structurii de date Map
+        Set<Map.Entry<Character, Integer>> set = charMap.entrySet();
+
+        //parcurg fiecare intrare a setului
+        for(Map.Entry<Character, Integer> entry : set)
+        {
+            //getValue returneaza numarul de aparitii al caracterului
+            if(entry.getValue() > 1)
+                System.out.println(entry.getKey());
+        }
+        System.out.println("\n");
+    }
+
+    public static boolean checkAnagrams(String word1, String word2)
+    {
+        System.out.println("Anagram problem: " + word1 + ", " + word2);
+        if(word1.length() != word2.length())
+            return false;
+
+        char[] characters1 = word1.toCharArray();
+        char[] characters2 = word2.toCharArray();
+
+        Arrays.sort(characters1);
+        Arrays.sort(characters2);
+
+        if(Arrays.equals(characters1, characters2))
+            return true;
+        return false;
+    }
+
+    public static void firstUniqueChar(String word)
+    {
+        System.out.println("Unique chars: " + word);
+        char[] chars = word.toCharArray();
+
+        for (Character ch : chars)
+        {
+            if(word.indexOf(ch) == word.lastIndexOf(ch))
+            {
+                System.out.println(ch);
+                return;
+            }
+        }
+
+        System.out.println("No unique chars! \n");
+    }
+
+    public static String reverseString(String word)
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        char[] chars = word.toCharArray();
+        //String result = "";
+
+        for(int i = word.length() - 1; i >= 0; i--)
+        {
+            stringBuilder.append(chars[i]);
+            //result += chars[i];
+        }
+        return stringBuilder.toString();
+    }
+    public static String reverseStringRecursively(String word)
+    {
+        //base case
+        if(word.length() < 2)
+            return word;
+        return (reverseStringRecursively(word.substring(1)) + word.substring(0,1));
+    }
+
+    public static void vowelsAndConsonants(String word)
+    {
+        char[] chars = word.toCharArray();
+        String vowels = "AEUIOUaeiou";
+
+        int vowelsCount = 0, consCount = 0;
+
+        for(Character ch : chars)
+        {
+            if(vowels.contains(ch.toString()))
+                vowelsCount++;
+            else consCount++;
+        }
+        System.out.println(word + " contains: " + vowelsCount + " vowels and " + consCount + " consonants");
+    }
+
+    /*public static String removeDuplicates(String word)
+    {
+        String wordCopy = word;
+        char[] chars = word.toCharArray();
+        for(Character ch : chars)
+            if(wordCopy.indexOf(ch) != wordCopy.lastIndexOf(ch))
+                wordCopy.replaceAll(ch.toString(), " ");
+
+        return wordCopy;
+    }*/
+}

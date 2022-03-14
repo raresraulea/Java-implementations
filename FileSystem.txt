@@ -1,0 +1,269 @@
+package com.company;
+
+import com.sun.security.jgss.GSSUtil;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) throws IOException {
+        File currentFile;
+        File[] currentFileFolders = {};
+        boolean open = true;
+        Scanner userInput = new Scanner(System.in);
+
+        showMenu();
+        String fileName = userInput.nextLine();
+        currentFile = new File(fileName);
+
+        while(open)
+        {
+            String userIntention;
+            if(validateSelectedFile(currentFile))
+            {
+                showSubMenu();
+                System.out.println("What do you want to do? Choose a letter: ");
+                userIntention = userInput.nextLine();
+                switch(userIntention)
+                {
+                    case "A": //Show Subfiles
+                        currentFileFolders = showSubfiles(currentFile);
+                        break;
+                    case "B":
+                        viewFileInfo(currentFile);
+                        break;
+                    case "C":
+                        createFile(currentFile);
+                        break;
+//                    case "D":
+//                        createFolder(currentFile);
+//                        break;
+                    case "E":
+                        viewContent(currentFile);
+                        break;
+                    case "F":
+                        //File[] fileReference = { currentFile };
+                        currentFile = currentFile.getParentFile();
+                        System.out.println("Moved back to parent: " + currentFile.getCanonicalPath());
+                        currentFileFolders = currentFile.listFiles();
+                        break;
+                    case "G":
+                        open = false;
+                        break;
+                    case "H":
+                        try
+                        {
+                            currentFile =  enterSubfolder(currentFile, currentFileFolders);
+                            System.out.println("Current File: " + currentFile.getCanonicalPath());
+                        }
+                        catch (IOException e)
+                        {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case "I":
+                        writeToFile(currentFile);
+                        break;
+                }
+            }
+            else
+            {
+                System.out.println("Enter a valid file: ");
+                currentFile = new File(userInput.nextLine());
+
+            }
+        }
+    }
+
+    private static void writeToFile(File currentFile)
+    {
+        try
+        {
+            FileWriter fileWriter = new FileWriter(currentFile);
+            System.out.println("Enter the text to be written to the file: ");
+            Scanner sc = new Scanner(System.in);
+            String textToBeAdded = sc.nextLine();
+
+            fileWriter.write(textToBeAdded);
+
+            fileWriter.close();
+
+            System.out.println("Written to file: " + textToBeAdded);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private static void viewContent(File currentFile)
+    {
+        try
+        {
+            Scanner scanner = new Scanner(currentFile);
+
+            while(scanner.hasNextLine())
+            {
+                System.out.println(scanner.nextLine());
+            }
+            scanner.close();
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private static Object[] moveBack(File[] currentFile)
+    {
+        // Object Array containing
+        // first: File parentFile
+        // second: parentFile files
+
+        Object[] ret = new Object[2];
+        ret[0] = currentFile[0].getParentFile();
+        ret[1] = currentFile[0].listFiles();
+
+        return ret;
+    }
+
+    private static File enterSubfolder(File currentFile, File[] currentFileFolders)
+    {
+
+        System.out.println("Enter file number from the File List: ");
+
+        Scanner sc = new Scanner(System.in);
+
+        int fileNumber = sc.nextInt();
+        File f2 = currentFileFolders[fileNumber-1];
+
+        try
+        {
+            if(isSubFile(f2, currentFile))
+                return f2.getCanonicalFile();
+        }
+        catch (IOException e)
+        {
+            System.out.println("Subfolder Error!");
+            e.printStackTrace();
+        }
+
+        return currentFile;
+
+    }
+
+    private static boolean isSubFile(File f2, File currentFile)
+            throws IOException
+    {
+        File child = f2.getCanonicalFile();
+        File parent = currentFile.getCanonicalFile();
+
+        File parentIterator = parent;
+
+        while(parentIterator != null)
+        {
+            if(parent.equals(parentIterator))
+            {
+                System.out.println("File accepted!");
+                return true;
+            }
+
+            parentIterator = parentIterator.getParentFile();
+        }
+
+        System.out.println("File is not subdirectory!");
+
+        return false;
+    }
+
+    private static void createFile(File currentFile)
+    {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter file name: ");
+        String filename = sc.nextLine();
+
+        File myFile = new File(filename);
+        try
+        {
+            if(myFile.createNewFile())
+            {
+                currentFile = myFile;
+                System.out.println("Created File: " + myFile.getName());
+            }
+            else
+                System.out.println("File already exists.");
+
+        }
+        catch (IOException e)
+        {
+            System.out.println("An error occured");
+            e.printStackTrace();
+        }
+    }
+
+    private static void viewFileInfo(File currentFile)
+    {
+        if(currentFile.exists())
+        {
+            System.out.println("File Name: " + currentFile.getName());
+            System.out.println("Writeable: " + currentFile.canWrite());
+            System.out.println("Readable: " + currentFile.canRead());
+            System.out.println("File Size: " + currentFile.length());
+            System.out.println("Path: " + currentFile.getAbsolutePath());
+        }
+        else
+            System.out.println("File does not exist.");
+    }
+
+    private static File[] showSubfiles(File currentFile)
+    {
+        int row = 1;
+
+        File[] subFiles = currentFile.listFiles();
+        for(File file: subFiles)
+        {
+            System.out.println(row++ + ": " + file.getName());
+        }
+        System.out.println();
+        return subFiles;
+    }
+
+    private static void showSubMenu()
+    {
+        System.out.println("A. Show All SubFolders");
+        System.out.println("B. View File Info");
+        System.out.println("C. Create a File here");
+        System.out.println("D. Create a Folder here");
+        System.out.println("E. View Content of this File [if it's a .txt file!]");
+        System.out.println("F. Move Back");
+        System.out.println("G. Exit");
+        System.out.println("H. Enter Subfolder");
+        System.out.println("I. Add Text to file [if it's a .txt file!]");
+        System.out.println();
+    }
+
+    private static boolean validateSelectedFile(File currentFile)
+    {
+        if(currentFile.exists())
+        {
+            System.out.println("File selected: " + currentFile.getAbsolutePath());
+            return true;
+        }
+        else
+            System.out.println("File does not exist!");
+        return false;
+    }
+
+    private static void showMenu()
+    {
+        System.out.println("MENU: ");
+        System.out.println("Main Partitions on this PC: ");
+        System.out.println("Partition 1: C:\\");
+        System.out.println("Partition 2: D:\\");
+        System.out.println("Choose one: [C/D]");
+    }
+}

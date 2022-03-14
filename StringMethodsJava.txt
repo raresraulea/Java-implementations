@@ -1,0 +1,141 @@
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
+class Main {
+    public static void main(String[] args) {
+        String newLine = System.getProperty("line.separator");
+
+        //declarare Array de stringuri si printare prin conversie
+        String[] stringArray = {"Ana", "Rares", "Marcel"};
+        System.out.println(Arrays.toString(stringArray) + newLine);
+
+        //codePoint
+        String testString = "Test";
+        System.out.println(testString.codePointAt(0)); //UNICODE al primului caracter
+        System.out.println(testString.codePointBefore(1)); //UNICODE al primului caracter
+        int count = testString.codePointCount(0, 4); //numarul de UNICODEs gasite intre indexurile 0-4
+        System.out.println(count + newLine);
+
+        //compareTo
+        String str1 = "Text mai lung";
+        String str1Copy = "Text mai lung";
+        String str2 = "Text scurt";
+        if(str1.compareTo(str1Copy) == 0)
+            System.out.println(str1 + " = " + str1Copy);
+
+        if(str2.compareTo(str1) < 0)
+            System.out.println(str2 + " e mai scurt!" + newLine);
+        else if(str2.compareTo(str2) > 0)
+            System.out.println(str2 + " e mai lung");
+
+        //compareToIgonoreCases
+        String test1 = "Test";
+        String test2 = "test";
+        if(test1.compareToIgnoreCase(test2) == 0)
+            System.out.println("Comparatia case insensitive functioneaza!" + newLine);
+
+        //concat
+        String prenume = "Andrei ";
+        String nume = "Popa";
+        System.out.println(prenume.concat(nume) + newLine);
+
+        //contains
+        String contains1 = "Hello World";
+        System.out.println(contains1.contains("Hello")); //true
+        System.out.println(contains1.contains("Hel")); //true
+        System.out.println(contains1.contains("Hello World")); //true
+        System.out.println(contains1.contains("Hi!") + newLine); //false
+
+        //contentEquals
+        String contentEquals = "Hello World!";
+        System.out.println(contentEquals.contentEquals("Hello World!")); //true
+        System.out.println(contentEquals.contentEquals("Hello")); //false
+        System.out.println(contentEquals.contentEquals("ello")); //false
+        System.out.println(contentEquals.contentEquals("Hi!") + newLine); //false
+
+        //copyValueOf
+        char[] cpyVal = {'H', 'e', 'l', 'l', 'o'};
+        String cpyVal2 = ""; // empty string
+        System.out.println(cpyVal2.copyValueOf(cpyVal, 0 , 3) + newLine); //Hel
+
+        //endsWith
+        String ends = "Ends With";
+        System.out.println(ends.endsWith("With ")); // false
+        System.out.println(ends.endsWith("With")); // true
+        System.out.println(ends.endsWith("ith") + newLine); // true
+
+        //equals si equalsIgnoreCases
+        String eq = "equals";
+        String eqCpy = "equals";
+        String eqCase = "Equals";
+        System.out.println(eq + " = " + eqCpy + " : " + eq.equals(eqCpy));
+        System.out.println("No Case: " + eq + " = " + eqCase + " : " + eq.equalsIgnoreCase(eqCase));
+
+        /*
+        getBytes()	Encodeaza stringul apelant si returneaza un byte[] => comunicare client - server
+        getChars()	Creeaza un char[] din caracterele stringului apelant
+        */
+
+        //hashCode
+        String hash = "Hash";
+        int hashCode = hash.hashCode(); //returneaza un int, indexul pentru hashTable
+        System.out.println(hashCode + newLine);
+
+        //indexOf
+        String sentence = "Cauta cuvantul in propozitie! Dar cuvantul e si aici.";
+        int indexFound = sentence.indexOf("cuvantul");
+        System.out.println(indexFound + newLine);
+
+        //lastIndexOf
+        int lastIndex = sentence.lastIndexOf("cuvantul");
+        System.out.println(lastIndex + newLine);
+
+        //replace - doar caractere!, nu stringuri/siruri/tokenuri
+        String replace = "Ana are mere. Ana are pere.";
+        System.out.println(replace.replace('a', 'e'));
+        System.out.println(replace.replaceFirst("Ana", "Rares"));
+        System.out.println(replace.replaceAll("Ana", "Rares") + newLine);
+
+        //split; regex = regular Expression
+        String splitMe = "Propozitie cu cuvinte aleatorii, dar cu sens.";
+        String[] arrayOfSplits = splitMe.split(" ");
+        for (String string: arrayOfSplits)
+        {
+            System.out.println(string + newLine);
+        }
+
+        //suplimentar GeeksForGeeks
+        /*Let the string to be splitted be : geekss@for@geekss
+
+        Regex       Limit             Result
+        @           2         {“geekss”, ”for@geekss”}
+        @           5         {“geekss”, ”for”, ”geekss”}
+        @           -2       {“geekss”, ”for”, ”geekss”}
+        s           5        {“geek”, ”“, “@for@geek”, “”, “”}
+        s           -2       {“geek”, ” “, “@for@geek”, “”, “”}
+        s           0        {“geek”, ””, ”@for@geek”}*/
+
+        //substring
+        String bigString = "Scoate untul din mine!";
+        String untulDeScos = "untul";
+        int indexUnt = bigString.indexOf(untulDeScos);
+        int untLength =  untulDeScos.length();
+        String substr = bigString.substring(indexUnt, indexUnt + untLength);
+        System.out.println(substr + newLine);
+
+        //lowercase si uppercase
+        String vreauSaFiuMare = "sunt mic";
+        String vreauSaFiuIarasiMic = "SUNT STUDENT";
+        System.out.println(vreauSaFiuMare.toUpperCase());
+        System.out.println(vreauSaFiuIarasiMic.toLowerCase());
+
+        //Despartire in tokenuri
+        String myString = "Ana are mere, pere si dude, iar Rares are doar prune. E ok?";
+        StringTokenizer tokenizer = new StringTokenizer(myString);
+        while(tokenizer.hasMoreTokens())
+        {
+            //System.out.println(tokenizer.nextToken(" ,."));
+        }
+
+    }
+}

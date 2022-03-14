@@ -1,0 +1,180 @@
+package com.company;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+
+public class Main {
+
+    public static void main(String[] args) {
+        // CRUD - Create, Read, Update, Delete Operations on Java Collections
+
+        // 1. ArrayList
+        ArrayList<String> students = new ArrayList<String>(); //contine doar Stringuri
+        ArrayList objects = new ArrayList(); //contine orice obiecte
+
+        // a. Adaugare elemente
+        students.add("Ana");
+        students.add("Andrei");
+        students.add("Rares");
+        students.add("Marius");
+
+        Car audi = new Car("Audi");
+        objects.add("Ana");
+        objects.add(10);
+        objects.add(10.5);
+        objects.add('A');
+        objects.add(audi);
+        objects.add(new Car("VW"));
+
+        System.out.println("Students list: " + students);
+        System.out.println("Objects list: " + objects);
+
+        // b. Accesare elemente
+        String student1 = students.get(1);
+        String student2 = students.get(2);
+
+        Object obj1 = objects.get(2);
+        Object obj2 = objects.get(4);
+
+        System.out.println("Fetched students are: " + student1 + " " + student2);
+        System.out.println("Fetched objects are: " + obj1 + " " + obj2);
+
+        // c. Modificare elemente
+        students.set(0, "first Student");
+        System.out.println("Updated students List:" + students);
+
+        // d. Stergere elemente
+        //students.remove(0);
+        //students.remove("Rares");
+        System.out.println("List after removing items: " + students);
+
+        //students.clear();
+
+        if(students.contains("Andrei"))
+            System.out.println("Andrei nu s-a lasat de facultate");
+
+        // e.  Parcurgere/Iteration
+
+        System.out.println("====== Basic For Loop ======");
+        for(int i = 0; i < students.size(); i++)
+            System.out.println(students.get(i));
+        System.out.println("============================");
+
+        System.out.println("===== Enhanced For Loop =====");
+        //for(Object std : students)
+        for(String std : students)
+            System.out.println(std);
+        System.out.println("============================");
+
+        System.out.println("========= Iterator =========");
+        Iterator<String> itr = students.iterator();
+        while(itr.hasNext())
+            System.out.println(itr.next());
+        System.out.println("============================");
+
+        // 2. Queue - PriorityQueue
+
+        // a. Create
+        PriorityQueue <Integer> minQueue = new PriorityQueue<Integer>();
+        //Queue<Integer> maxQueue = new PriorityQueue<>(Collections.reverseOrder());
+        Queue<Integer> maxQueue = new PriorityQueue<>((x, y) -> Integer.compare(y,x));
+
+        for(int i = 10; i > 0; i--)
+        {
+            minQueue.add(i);
+            maxQueue.add(i);
+        }
+
+        // b. Read head of Queue - Peek -
+        // c. Delete head of Queue - Poll -
+        // Create Min-heap / Max-Heap
+
+        System.out.println("MinQ:");
+        while(!minQueue.isEmpty())
+        {
+            System.out.println(minQueue.peek());
+            minQueue.poll();
+        }
+
+        System.out.println("MaxQ:" + maxQueue.toString());
+        while(!maxQueue.isEmpty())
+        {
+            System.out.println(maxQueue.peek());
+            maxQueue.poll();
+        }
+
+        // 3. HashSet
+        //HashSet <String> set = new HashSet<String>(); //unique, unsorted
+        TreeSet <String> set = new TreeSet<String>(); //unique, sorted
+        set.add("John");
+        set.add("Jim");
+        set.add("Jack");
+        set.add("Joe");
+        set.add("John");
+        set.add("John");
+
+        Iterator<String> it = set.iterator();
+        while(it.hasNext())
+            System.out.println(it.next());
+
+        if(set.contains("John"))
+            set.remove("John");
+
+        System.out.println("Set after removing: " + set);
+
+        // 4. HashMap
+        HashMap <String, Integer>  stds = new HashMap<>(); // Key - nume, Value - nota
+        stds.put("Ana", 10);
+        stds.put("Rares", 5);
+        stds.put("Andrei", 7);
+        stds.put("Marius", 10);
+        stds.put("Alina", 3);
+        stds.put("Andreea", 2);
+        stds.put("Adrian", 4);
+        stds.put("Rebeca", 10);
+
+        System.out.println("Map: " + stds);
+
+        Stream<String> str = keys(stds, 10);
+        List stds10 = str.collect(Collectors.toList());
+        System.out.println("Studentii de 10 sunt: " + stds10);
+
+        System.out.println("Studentii cu restante sunt " + restantieri(stds).collect(Collectors.toList()));
+
+
+    }
+
+    //metoda generica pentru aflarea tuturor cheilor cu o anumita valoare
+    public static <KeyType, ValueType> Stream
+            <KeyType> keys (Map <KeyType, ValueType> map, ValueType value)
+    {
+        // 1. Obtin o structura tip set cu toate intrarile map-ului
+        Set<Map.Entry<KeyType, ValueType>> entrySet = map.entrySet();
+
+        // 2. Obtin un stream pe care sa il pot filtra cu functia lambda dorita
+        Stream<Map.Entry<KeyType, ValueType>> notFilteredStream =
+                entrySet.stream();
+
+        // 3. Obtin un set de Entry-uri cu toate perechile Key-Value care au valoarea dorita
+        Stream<Map.Entry<KeyType, ValueType>> filteredStream = notFilteredStream
+                .filter(entry -> value.equals(entry.getValue()));
+
+        // 4. Reduc Entry Type la tipul generic al Key-ului
+        // aplicand fiecarui Entry - cu ajutorul functiei map - Map.Entry::getKey
+        Stream <KeyType> resultStr = filteredStream.map(Map.Entry::getKey);
+
+        return resultStr;
+    }
+
+    public static Stream<String> restantieri(Map <String, Integer> map)
+    {
+        return map.entrySet()
+                .stream()
+                .filter(entry -> entry.getValue() < 5)
+                .map(Map.Entry::getKey);
+
+    }
+
+}

@@ -1,0 +1,155 @@
+package com.company;
+
+import java.util.Random;
+
+public class Main {
+
+    static int li = 1;
+    static int ls = 2;
+    static int nc = 500;
+    static int ng = 50;
+    static double probIncrucisare = 0.3;
+    static double probMutatie = 0.1;
+    static int[] c = new int[nc];
+    static Random rand = new Random();
+    static double xmin;
+    static double fmin;
+
+    public static double X(double v)
+    {
+        return li + 1.0*v/65535*(ls-li); //65k = 2^16 - 1 = max pe 2 octeti
+    }
+    public static double F(double v)
+    {
+        return Math.sin(v);
+    }
+    public static int getBit(int v, int poz){
+        return (v >> poz)&1;
+    }
+    public static double setBit(int v, int poz)
+    {
+        return v|(1 << poz);
+    }
+    public static double resetBit(int v, int poz)
+    {
+        return v&~ (1 << poz);
+    }
+    public static void INCRUCISARE(int[] c, int p1, int p2)
+    {
+        int v1 = c[p1];
+        int v2 = c[p2];
+        int r = rand.nextInt(16);
+        for(int j = r; j < 16; j++)
+        {
+            if(getBit(v2, j) == 1)
+                setBit(c[p1], j);
+            else
+                resetBit(c[p1], j);
+            if(getBit(v1, j) == 1)
+                setBit(c[p2], j);
+            else
+                resetBit(c[p2], j);
+        }
+    }
+    public static void MUTATIE(int[] c, int p)
+    {
+        int cp = c[p];
+        for(int j = 0; j < 1; j++)
+        {
+            if(probMutatie>rand.nextDouble())
+                if(getBit(cp ,j) == 1)
+                    resetBit(cp, j);
+                else
+                    setBit(cp, j);
+        }
+        if(F(X(cp)) < F(X(c[p])))
+            c[p] = cp;
+    }
+    public static void INITIALIZARE(int[] c){
+        for(int i = 0; i < nc; i++)
+            c[i] = rand.nextInt(65536);
+        xmin = X(c[0]);
+        fmin = F(xmin);
+    }
+
+    public static void SELECTIE(int[] c)
+    {
+        int s = 0;
+        double[] v = new double[nc];
+        double[] p = new double[nc];
+        for(int i =0 ; i < nc; i++)
+        {
+            v[i] = F(X(c[i]));
+            s+=v[i];
+        }
+        p[0] = v[0]/s;
+        for(int i = 1; i < nc; i++)
+            p[i] = p[i-1] + v[i]/s;
+        int[] c1 = new int[nc];
+        for (int i = 0; i < nc; i++)
+            c1[i] = c[i];
+        for(int i = 0; i < nc; i++)
+        {
+            double r = rand.nextDouble();
+            for(int j = 0; j < nc; j++)
+                if(r > p[j] && r <= p[j+1])
+                    c1[i] = c[j];
+        }
+        for (int i = 0 ; i < nc; i ++)
+            c[i] = c1[i];
+    }
+    public static void RECOMBINARE(int[] c)
+    {
+        int p1 = 0, p2;
+        boolean primul = true;
+        for (int i = 0; i < nc; i++)
+        {
+            if (primul)
+            {
+                primul = false;
+                p1 = i;
+            }
+            else
+            {
+                primul = true;
+                p2 = i;
+                INCRUCISARE(c, p1, p2);
+            }
+        }
+    }
+    public static void MODIFICARE(int[] c)
+    {
+        for (int i =0; i < nc; i++)
+            MUTATIE(c, i);
+    }
+    public static void MIN(int ng)
+    {
+        INITIALIZARE(c);
+        for (int t = 0; t < ng; t++)
+        {
+            SELECTIE(c);
+            RECOMBINARE(c);
+            MODIFICARE(c);
+            int miniteri = 0;
+            double miniterf = F(X(c[0]));
+            for (int i = 1; i < nc; i ++)
+            {
+                if(Double.compare(F(X(c[i])), miniterf) < 0)
+                {
+                    miniterf = F(X(c[i]));
+                    miniteri = i;
+                }
+            }
+            if(miniterf < fmin)
+            {
+                fmin = miniterf;
+                xmin = X(c[miniteri]);
+            }
+
+        }
+        System.out.println(xmin + " " + fmin);
+    }
+    public static void main(String[] args) {
+        MIN(50);
+    }
+}
